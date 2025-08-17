@@ -19,8 +19,7 @@ config :crypto_alerter_elixir, CryptoAlerterElixirWeb.Endpoint,
     formats: [html: CryptoAlerterElixirWeb.ErrorHTML, json: CryptoAlerterElixirWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: CryptoAlerterElixir.PubSub,
-  live_view: [signing_salt: "kbaBpW1h"]
+  pubsub_server: CryptoAlerterElixir.PubSub
 
 # Configures the mailer
 #

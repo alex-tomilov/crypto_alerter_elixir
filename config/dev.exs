@@ -1,15 +1,5 @@
 import Config
 
-# Configure your database
-config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "crypto_alerter_elixir_dev",
-  stacktrace: true,
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
-
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -23,7 +13,6 @@ config :crypto_alerter_elixir, CryptoAlerterElixirWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "a2Stnee1A0kZ+rgSd2PONKiQo0t6VosTQyx2STLjrPO0eEyetQA5C62Giorgu/OJ",
   watchers: [
     esbuild:
       {Esbuild, :install_and_run, [:crypto_alerter_elixir, ~w(--sourcemap=inline --watch)]},

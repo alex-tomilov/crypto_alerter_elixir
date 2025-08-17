@@ -35,3 +35,4 @@ crypto_alerter_elixir-*.tar
 npm-debug.log
 /assets/node_modules/
 
+envs/.env

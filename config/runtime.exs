@@ -1,4 +1,24 @@
 import Config
+import Dotenvy
+
+env_dir_prefix = System.get_env("RELEASE_ROOT") || Path.expand("./envs")
+
+source!([
+  System.get_env(),
+  Path.absname(".env", env_dir_prefix),
+  Path.absname(".#{config_env()}.env", env_dir_prefix),
+  Path.absname(".#{config_env()}.overrides.env", env_dir_prefix)
+])
+
+# Configure your database
+config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,
+  username: env!("USERNAME", :string),
+  password: env!("PASSWORD", :string),
+  hostname: env!("HOSTNAME", :string!),
+  database: env!("DATABASE", :string!),
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -19,6 +39,10 @@ import Config
 if System.get_env("PHX_SERVER") do
   config :crypto_alerter_elixir, CryptoAlerterElixirWeb.Endpoint, server: true
 end
+
+config :crypto_alerter_elixir, CryptoAlerterElixirWeb.Endpoint,
+  secret_key_base: env!("SECRET_KEY_BASE", :string!),
+  live_view: [signing_salt: env!("LIVE_VIEW_SIGNING_SALT", :string!)]
 
 if config_env() == :prod do
   database_url =
