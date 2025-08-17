@@ -44,6 +44,11 @@ config :crypto_alerter_elixir, CryptoAlerterElixirWeb.Endpoint,
   secret_key_base: env!("SECRET_KEY_BASE", :string!),
   live_view: [signing_salt: env!("LIVE_VIEW_SIGNING_SALT", :string!)]
 
+if config_env() == :test do
+  config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,
+    database: "#{env!("DATABASE", :string!)}#{System.get_env("MIX_TEST_PARTITION")}"
+end
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

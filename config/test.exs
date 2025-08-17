@@ -6,9 +6,6 @@ import Config
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
   database: "crypto_alerter_elixir_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
@@ -17,7 +14,6 @@ config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,
 # you can enable the server option below.
 config :crypto_alerter_elixir, CryptoAlerterElixirWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "uvg7GmrAN43aGZyuc7vQtFWgFNd3zfZlUwSmZ+0R1JEpjfUyVxFdckhZfIfeMrtw",
   server: false
 
 # In test we don't send emails
