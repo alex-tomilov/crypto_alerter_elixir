@@ -20,6 +20,12 @@ defmodule CryptoAlerterElixirWeb.Router do
     get "/", HomeController, :index
   end
 
+  scope "/", CryptoAlerterElixirWeb do
+    pipe_through :api
+
+    get "/up", HealthController, :up
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", CryptoAlerterElixirWeb do
   #   pipe_through :api
