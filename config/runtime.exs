@@ -42,7 +42,11 @@ end
 
 config :crypto_alerter_elixir, CryptoAlerterElixirWeb.Endpoint,
   secret_key_base: env!("SECRET_KEY_BASE", :string!),
-  live_view: [signing_salt: env!("LIVE_VIEW_SIGNING_SALT", :string!)]
+  live_view: [signing_salt: env!("LIVE_VIEW_SIGNING_SALT", :string!)],
+  dashboard_auth: %{
+    username: env!("DASHBOARD_USER", :string),
+    password: env!("DASHBOARD_PASS", :string)
+  }
 
 if config_env() == :test do
   config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,

@@ -1,5 +1,6 @@
 defmodule CryptoAlerterElixirWeb.Router do
   use CryptoAlerterElixirWeb, :router
+  import Plug.BasicAuth, only: [parse_basic_auth: 1, request_basic_auth: 2]
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -12,6 +13,24 @@ defmodule CryptoAlerterElixirWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :dashboard_auth do
+    plug :auth_dashboard
+  end
+
+  defp auth_dashboard(conn, _opts) do
+    case {CryptoAlerterElixirWeb.Endpoint.config(:dashboard_auth), parse_basic_auth(conn)} do
+      {%{username: u, password: p}, {user, pass}} ->
+        if Plug.Crypto.secure_compare(user, u) and Plug.Crypto.secure_compare(pass, p) do
+          conn
+        else
+          conn |> request_basic_auth(realm: "LiveDashboard") |> halt()
+        end
+
+      _ ->
+        conn |> request_basic_auth(realm: "LiveDashboard") |> halt()
+    end
   end
 
   scope "/", CryptoAlerterElixirWeb do
@@ -41,7 +60,7 @@ defmodule CryptoAlerterElixirWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
-      pipe_through :browser
+      pipe_through [:browser, :dashboard_auth]
 
       live_dashboard "/dashboard", metrics: CryptoAlerterElixirWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
