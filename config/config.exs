@@ -30,6 +30,11 @@ config :crypto_alerter_elixir, CryptoAlerterElixirWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :crypto_alerter_elixir, CryptoAlerterElixir.Mailer, adapter: Swoosh.Adapters.Local
 
+config :crypto_alerter_elixir, Oban,
+  engine: Oban.Engines.Basic,
+  queues: [default: 10],
+  repo: CryptoAlerterElixir.Repo
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.25.4",

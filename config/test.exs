@@ -19,6 +19,8 @@ config :crypto_alerter_elixir, CryptoAlerterElixirWeb.Endpoint,
 # In test we don't send emails
 config :crypto_alerter_elixir, CryptoAlerterElixir.Mailer, adapter: Swoosh.Adapters.Test
 
+config :crypto_alerter_elixir, Oban, testing: :manual
+
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false
 
