@@ -66,6 +66,7 @@ defmodule CryptoAlerterElixir.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:dotenvy, "~> 1.0.0"},
+      {:websockex, "~> 0.4.3"},
       {:bandit, "~> 1.5"}
     ]
   end
