@@ -71,6 +71,7 @@ defmodule CryptoAlerterElixir.MixProject do
       {:broadway_kafka, "~> 0.4.1"},
       {:cachex, "~> 4.0"},
       {:oban, "~> 2.19"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:bandit, "~> 1.5"}
     ]
   end
