@@ -69,6 +69,7 @@ defmodule CryptoAlerterElixir.MixProject do
       {:websockex, "~> 0.4.3"},
       {:telegram, github: "visciang/telegram", tag: "2.1.0"},
       {:broadway_kafka, "~> 0.4.1"},
+      {:cachex, "~> 4.0"},
       {:bandit, "~> 1.5"}
     ]
   end
