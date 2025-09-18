@@ -12,10 +12,10 @@ source!([
 
 # Configure your database
 config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,
-  username: env!("USERNAME", :string),
-  password: env!("PASSWORD", :string),
-  hostname: env!("HOSTNAME", :string!),
-  database: env!("DATABASE", :string!),
+  username: env!("POSTGRES_USER", :string),
+  password: env!("POSTGRES_PASSWORD", :string),
+  hostname: env!("POSTGRES_HOSTNAME", :string!),
+  database: env!("POSTGRES_DB", :string!),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

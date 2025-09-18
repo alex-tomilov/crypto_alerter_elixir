@@ -18,19 +18,51 @@ ARG DEBIAN_VERSION=bookworm-20250908-slim
 ARG BUILDER_IMAGE="docker.io/hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="docker.io/debian:${DEBIAN_VERSION}"
 
+FROM ${BUILDER_IMAGE} AS dev
+ARG ELIXIR_VERSION
+ARG OTP_VERSION
+ARG DEBIAN_VERSION
+
+ENV LANG=C.UTF-8 \
+    MIX_ENV=dev
+
+WORKDIR /app
+
+# Dev tools + inotify (helps file-change detection across bind mounts on Linux)
+# If your base is already Debian slim, this works as-is.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential git curl inotify-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# Prepare Mix so deps fetch quickly
+RUN mix local.hex --force && mix local.rebar --force
+
+# Optional caching of deps: copy manifest and fetch deps now.
+# At runtime, we bind-mount the source, so we don't copy the whole tree here.
+COPY mix.exs mix.lock ./
+# If some deps read config at fetch/compile time, keep this:
+COPY config config
+RUN mix deps.get
+
+EXPOSE 4000
+
+# For dev convenience you can switch to iex by replacing the command below with:
+# CMD ["bash", "-lc", "mix ecto.create && mix ecto.migrate && iex -S mix phx.server"]
+CMD ["bash", "-lc", "mix ecto.create && mix ecto.migrate && mix phx.server"]
+
 FROM ${BUILDER_IMAGE} AS builder
 
 # install build dependencies
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends build-essential git \
-  && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends build-essential git \
+    && rm -rf /var/lib/apt/lists/*
 
 # prepare build dir
 WORKDIR /app
 
 # install hex + rebar
 RUN mix local.hex --force \
-  && mix local.rebar --force
+    && mix local.rebar --force
 
 # set build ENV
 ENV MIX_ENV="prod"
@@ -71,12 +103,12 @@ RUN mix release
 FROM ${RUNNER_IMAGE} AS final
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends libstdc++6 openssl libncurses5 locales ca-certificates \
-  && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends libstdc++6 openssl libncurses5 locales ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
-  && locale-gen
+    && locale-gen
 
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
