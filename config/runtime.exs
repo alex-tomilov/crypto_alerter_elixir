@@ -48,7 +48,12 @@ config :crypto_alerter_elixir, CryptoAlerterElixirWeb.Endpoint,
     password: env!("DASHBOARD_PASS", :string)
   }
 
-if config_env() == :test do
+config :crypto_alerter_elixir, CryptoAlerterElixir.Mailer,
+  adapter: Swoosh.Adapters.Mailgun,
+  api_key: env!("MAILGUN_API_KEY", :string),
+  domain: env!("MAILGUN_DOMAIN", :string)
+
+if(config_env() == :test) do
   config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,
     database: "#{env!("DATABASE", :string!)}#{System.get_env("MIX_TEST_PARTITION")}"
 end
