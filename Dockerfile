@@ -31,7 +31,7 @@ WORKDIR /app
 # Dev tools + inotify (helps file-change detection across bind mounts on Linux)
 # If your base is already Debian slim, this works as-is.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential git curl inotify-tools \
+    build-essential git curl inotify-tools cmake pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 # Prepare Mix so deps fetch quickly
@@ -54,7 +54,7 @@ FROM ${BUILDER_IMAGE} AS builder
 
 # install build dependencies
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends build-essential git \
+    && apt-get install -y --no-install-recommends build-essential git cmake pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 # prepare build dir

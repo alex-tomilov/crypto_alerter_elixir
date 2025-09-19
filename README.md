@@ -1,11 +1,11 @@
 # Crypto Alerter Elixir
 
-Crypto Alerter is a Phoenix-based application designed to monitor cryptocurrency price changes and send alerts. It's built with a modern Elixir stack, leveraging real-time features and a robust background job processing system.
+Crypto Alerter is a Phoenix-based application designed to monitor cryptocurrency price changes and send alerts. It's built with a modern Elixir stack, leveraging real-time features, a robust background job processing system, and data streaming with Kafka.
 
 ## Overview
 
 This application is designed to:
-- Connect to cryptocurrency data streams.
+- Connect to cryptocurrency data streams via WebSockets and Apache Kafka.
 - Monitor price fluctuations for specified cryptocurrencies.
 - Send alerts via multiple channels (e.g., Telegram) when prices cross certain thresholds.
 - Provide a web interface for configuration and monitoring.
@@ -13,6 +13,7 @@ This application is designed to:
 ## Features
 
 - Real-time price tracking with Phoenix LiveView.
+- Data processing pipelines with Broadway and Apache Kafka.
 - Background job processing with Oban for reliable alert delivery.
 - WebSocket integration for real-time data consumption.
 - Telegram bot for notifications.
@@ -21,6 +22,7 @@ This application is designed to:
 ## Tech Stack
 
 - **Backend:** Elixir, Phoenix
+- **Data Streaming:** Apache Kafka with Broadway
 - **Database:** PostgreSQL
 - **Real-time:** Phoenix LiveView, WebSockets
 - **Background Jobs:** Oban
@@ -33,9 +35,10 @@ To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-- Elixir ~> 1.15
-- Erlang/OTP
+- Elixir ~> 1.18
+- Erlang/OTP 28
 - PostgreSQL
+- Apache Kafka (for data streaming features)
 
 ### Installation
 
@@ -87,6 +90,8 @@ MAILGUN_DOMAIN="your_mailgun_domain"
 
 # Telegram Bot Token
 TELEGRAM_BOT_TOKEN="your_telegram_bot_token"
+
+# Apache Kafka configuration will also be required.
 ```
 
 **Note:** For production, it is recommended to use `DATABASE_URL` instead of individual database credentials.
