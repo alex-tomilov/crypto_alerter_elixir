@@ -41,6 +41,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Point Dotenvy to CI env dir
+        run: echo "DOTENVY_DIR=$GITHUB_WORKSPACE/ci_envs" >> $GITHUB_ENV
+
       - name: Set up BEAM (Elixir/Erlang)
         uses: erlef/setup-beam@v1
         with:
