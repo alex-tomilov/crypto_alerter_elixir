@@ -55,7 +55,7 @@ config :crypto_alerter_elixir, CryptoAlerterElixir.Mailer,
 
 if(config_env() == :test) do
   config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,
-    database: "#{env!("DATABASE", :string!)}#{System.get_env("MIX_TEST_PARTITION")}"
+    database: "#{env!("POSTGRES_DB", :string!)}#{System.get_env("MIX_TEST_PARTITION")}"
 end
 
 if config_env() == :prod do
