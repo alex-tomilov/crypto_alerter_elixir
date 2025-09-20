@@ -16,7 +16,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17.6-alpine
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -30,6 +30,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Point Dotenvy to CI env dir
+        run: echo "DOTENVY_DIR=$GITHUB_WORKSPACE/ci_envs" >> $GITHUB_ENV
 
       - name: Start Redpanda (dev container mode)
         run: |
