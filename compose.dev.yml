@@ -60,7 +60,7 @@ services:
     ports:
       - "4000:4000"
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
       kafka:
         condition: service_started
