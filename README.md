@@ -2,6 +2,8 @@
 
 Crypto Alerter is a Phoenix-based application designed to monitor cryptocurrency price changes and send alerts. It's built with a modern Elixir stack, leveraging real-time features, a robust background job processing system, and data streaming with Kafka.
 
+This project is in the early stages of development. The current focus is on setting up the foundational components of the system.
+
 ## Overview
 
 This application is designed to:
@@ -12,13 +14,16 @@ This application is designed to:
 
 ## Features
 
-- **Real-time Price Tracking:** Utilizes Phoenix LiveView and WebSockets for real-time price updates.
-- **Data Processing:** Implements data processing pipelines with Broadway and Apache Kafka.
-- **Background Jobs:** Uses Oban for reliable background job processing, ensuring alert delivery.
-- **Notifications:** Supports multiple notification channels, including Telegram and Email (via Mailgun).
+The following features are planned, with foundational work started:
+
+- **Real-time Foundation:** Utilizes Phoenix LiveView and WebSockets for real-time price updates.
+- **Data Ingestion:** A data processing pipeline with Broadway and Apache Kafka is set up for data ingestion.
+- **Background Jobs:** Uses Oban for reliable background job processing.
+- **Notifications:** Includes dependencies for multiple notification channels, including Telegram and Email (via Mailgun).
 - **Web Server:** High-performance web server powered by Bandit.
 - **System Monitoring:** Includes a Phoenix Live Dashboard for monitoring system health and Oban jobs.
 - **Caching:** Leverages Cachex for in-memory caching to improve performance.
+- **Health Check:** A `/up` endpoint for health checks.
 
 ## Tech Stack
 
@@ -26,7 +31,7 @@ This application is designed to:
 - **Web Server:** Bandit (`~> 1.5`)
 - **Data Streaming:** Apache Kafka with Broadway (`~> 0.4.1`)
 - **Database:** PostgreSQL with Ecto (`~> 3.13`)
-- **Real-time:** Phoenix LiveView (`~> 1.1.0`), WebSockets (`websockex ~> 0.4.3`)
+- **Real-time:** Phoenix LiveView (`~> 1.1.0`), WebSockets (`websock_adapter ~> 0.5.0`)
 - **Background Jobs:** Oban (`~> 2.19`)
 - **Email:** Swoosh (`~> 1.19`) with Mailgun
 - **HTTP Client:** Req (`~> 0.5`)
@@ -43,7 +48,7 @@ To get a local copy up and running, follow these simple steps.
 - Elixir `1.18.4`
 - Erlang/OTP `28.0.2`
 - PostgreSQL
-- Apache Kafka (for data streaming features)
+- Apache Kafka (optional, for data streaming features)
 
 ### Installation
 
@@ -99,6 +104,14 @@ MAILGUN_BASE_URL="https://api.mailgun.net"
 
 # Telegram Bot Token
 TELEGRAM_BOT_TOKEN="your_telegram_bot_token"
+
+# Kafka configuration (optional)
+# Set to "true" to enable the Kafka pipeline
+ENABLE_KAFKA="false"
+# KAFKA_HOSTS="localhost:9092"
+# KAFKA_TOPICS="crypto_prices"
+# KAFKA_GROUP_ID="crypto_alerter"
+
 
 # Production specific configuration
 # PHX_HOST="example.com"
