@@ -60,7 +60,7 @@ jobs:
             _build
             ~/.mix
             ~/.hex
-          key: ${{ runner.os }}-kafka-${{ hashFiles('mix.lock') }}
+          key: ${{ runner.os }}-beam-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
 
       - run: mix deps.get --only test
       - run: mix ecto.create && mix ecto.migrate

@@ -28,6 +28,16 @@ services:
       --advertise-kafka-addr internal://kafka:9092,external://localhost:19092
     ports:
       - "19092:19092" # host access for local tools
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "rpk cluster health -X brokers=localhost:9092 >/dev/null 2>&1",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
     volumes:
       - redpanda_dev:/var/lib/redpanda/data
 
@@ -63,7 +73,7 @@ services:
       postgres:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
 volumes:
   pgdata_dev:
