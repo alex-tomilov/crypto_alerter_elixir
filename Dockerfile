@@ -125,6 +125,9 @@ COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/crypto_alerte
 
 USER nobody
 
+HEALTHCHECK --interval=30s --timeout=5s --retries=10 \
+    CMD wget -qO- "http://127.0.0.1:${PORT:-4000}/up" >/dev/null || exit 1
+
 # If using an environment that doesn't automatically reap zombie processes, it is
 # advised to add an init process such as tini via `apt-get install`
 # above and adding an entrypoint. See https://github.com/krallin/tini for details

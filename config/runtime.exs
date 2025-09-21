@@ -11,6 +11,26 @@ source!([
   System.get_env()
 ])
 
+parse_hosts = fn s ->
+  s
+  |> String.split(",", trim: true)
+  |> Enum.map(fn hp ->
+    [h, p] = String.split(hp, ":", parts: 2)
+    {h, String.to_integer(p)}
+  end)
+end
+
+truthy? = fn v -> v in ["1", "true", "TRUE", "yes", "y"] end
+
+enable_kafka =
+  case System.get_env("ENABLE_KAFKA") do
+    # default: on in dev/prod, off in test
+    nil -> config_env() != :test
+    v -> truthy?.(v)
+  end
+
+config :crypto_alerter_elixir, enable_kafka: enable_kafka
+
 # Configure your database
 config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,
   username: env!("POSTGRES_USER", :string),
@@ -54,7 +74,22 @@ config :crypto_alerter_elixir, CryptoAlerterElixir.Mailer,
   api_key: env!("MAILGUN_API_KEY", :string),
   domain: env!("MAILGUN_DOMAIN", :string)
 
-if(config_env() == :test) do
+if config_env() != :test do
+  brokers = System.get_env("KAFKA_BROKERS", "kafka:9092") |> parse_hosts.()
+  group_id = System.get_env("KAFKA_GROUP_ID", "crypto_alerter_dev")
+  topics = System.get_env("KAFKA_TOPICS", "events") |> String.split(",", trim: true)
+
+  config :crypto_alerter_elixir, CryptoAlerterElixir.Ingest.KafkaPipeline,
+    kafka: [
+      hosts: brokers,
+      group_id: group_id,
+      topics: topics,
+      offset_reset_policy: :earliest
+      # client_config: [sasl: {:scram_sha_256, System.get_env("KAFKA_USER"), System.get_env("KAFKA_PASS")}]
+    ]
+end
+
+if config_env() == :test do
   config :crypto_alerter_elixir, CryptoAlerterElixir.Repo,
     database: "#{env!("POSTGRES_DB", :string!)}#{System.get_env("MIX_TEST_PARTITION")}"
 end
