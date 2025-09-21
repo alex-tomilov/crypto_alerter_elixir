@@ -16,8 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        elixir: ["1.17.x", "1.18.x"]
-        otp: ["27", "28"]
+        elixir: ["1.17.3", "1.18.4"]
+        otp: ["27.3.4.3", "28.0"]
     env:
       MIX_ENV: test
       # App DB URL your Ecto Repo expects:
@@ -65,7 +65,7 @@ jobs:
             ~/.mix
             ~/.hex
             ~/.cache/rebar3
-          key: ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
+          key: ${{ runner.os }}-beam-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
 
       - name: Install deps
         run: mix deps.get --only test
@@ -99,7 +99,7 @@ jobs:
             _build
             ~/.mix
             ~/.hex
-          key: ${{ runner.os }}-cred-${{ hashFiles('mix.lock') }}
+          key: ${{ runner.os }}-beam-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
       - run: mix deps.get
       - run: mix credo --strict
 
@@ -124,7 +124,7 @@ jobs:
             ~/.mix
             ~/.hex
             priv/plts
-          key: ${{ runner.os }}-dialyzer-${{ hashFiles('mix.lock') }}
+          key: ${{ runner.os }}-beam-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
       - run: mix deps.get
       - run: mix compile
       # Build PLTs (cached) then run analysis
@@ -149,6 +149,6 @@ jobs:
             _build
             ~/.mix
             ~/.hex
-          key: ${{ runner.os }}-sobelow-${{ hashFiles('mix.lock') }}
+          key: ${{ runner.os }}-beam-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
       - run: mix deps.get
       - run: mix sobelow -i Config.HTTPS --exit
