@@ -1,0 +1,91 @@
+services:
+  postgres:
+    image: postgres:17.6-alpine
+    env_file:
+      - path: ./envs/.env
+        required: true
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -h localhost || exit 1",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  kafka:
+    image: docker.redpanda.com/redpandadata/redpanda:v25.2.5
+    command: >
+      redpanda start
+      --mode dev-container
+      --smp 1
+      --memory 1G
+      --overprovisioned
+      --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      --advertise-kafka-addr internal://kafka:9092,external://localhost:19092
+    ports:
+      - "19092:19092" # host access for local tools
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "rpk cluster health -X brokers=localhost:9092 >/dev/null 2>&1",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: 1
+    volumes:
+      - redpanda_dev:/var/lib/redpanda/data
+
+  console:
+    image: docker.redpanda.com/redpandadata/console:v3.2.2
+    environment:
+      KAFKA_BROKERS: kafka:9092
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka
+
+  app:
+    build:
+      context: .
+      target: dev
+    # For dev, run the normal server, not the release:
+    command: bash -lc "mix deps.get && mix ecto.create && mix ecto.migrate && mix phx.server"
+    env_file:
+      - path: envs/.env
+        required: true
+    environment:
+      KAFKA_BROKERS: "kafka:9092"
+      PHX_HOST: "localhost"
+      PORT: "4000"
+    volumes:
+      - .:/app
+      - mix_deps:/app/deps
+      - mix_build:/app/_build
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+volumes:
+  pgdata_dev:
+  redpanda_dev:
+  mix_deps:
+  mix_build:

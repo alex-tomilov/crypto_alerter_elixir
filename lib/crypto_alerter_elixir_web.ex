@@ -84,11 +84,11 @@ defmodule CryptoAlerterElixirWeb do
 
       # HTML escaping functionality
       import Phoenix.HTML
+      alias Phoenix.LiveView.JS
       # Core UI components
       import CryptoAlerterElixirWeb.CoreComponents
 
       # Common modules used in templates
-      alias Phoenix.LiveView.JS
       alias CryptoAlerterElixirWeb.Layouts
 
       # Routes generation with the ~p sigil

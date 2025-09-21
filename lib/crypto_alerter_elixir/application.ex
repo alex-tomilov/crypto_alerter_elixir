@@ -7,21 +7,28 @@ defmodule CryptoAlerterElixir.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      CryptoAlerterElixirWeb.Telemetry,
-      CryptoAlerterElixir.Repo,
-      {DNSCluster, query: Application.get_env(:crypto_alerter_elixir, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: CryptoAlerterElixir.PubSub},
-      # Start a worker by calling: CryptoAlerterElixir.Worker.start_link(arg)
-      # {CryptoAlerterElixir.Worker, arg},
-      # Start to serve requests, typically the last entry
-      CryptoAlerterElixirWeb.Endpoint
-    ]
+    children =
+      [
+        CryptoAlerterElixirWeb.Telemetry,
+        CryptoAlerterElixir.Repo,
+        {DNSCluster,
+         query: Application.get_env(:crypto_alerter_elixir, :dns_cluster_query) || :ignore},
+        {Phoenix.PubSub, name: CryptoAlerterElixir.PubSub},
+        # Start a worker by calling: CryptoAlerterElixir.Worker.start_link(arg)
+        # {CryptoAlerterElixir.Worker, arg},
+        # Start to serve requests, typically the last entry
+        CryptoAlerterElixirWeb.Endpoint
+      ] ++ kafka_children()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: CryptoAlerterElixir.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp kafka_children do
+    enabled? = Application.get_env(:crypto_alerter_elixir, :enable_kafka, false)
+    if enabled?, do: [CryptoAlerterElixir.Ingest.KafkaPipeline], else: []
   end
 
   # Tell Phoenix to update the endpoint configuration

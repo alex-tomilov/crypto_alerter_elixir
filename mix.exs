@@ -58,7 +58,7 @@ defmodule CryptoAlerterElixir.MixProject do
        app: false,
        compile: false,
        depth: 1},
-      {:swoosh, "~> 1.16"},
+      {:swoosh, "~> 1.19"},
       {:req, "~> 0.5"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
@@ -66,6 +66,15 @@ defmodule CryptoAlerterElixir.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:dotenvy, "~> 1.0.0"},
+      {:telegram, github: "visciang/telegram", tag: "2.1.0"},
+      {:broadway_kafka, "~> 0.4.1"},
+      {:cachex, "~> 4.0"},
+      {:oban, "~> 2.19"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: :dev, runtime: false},
+      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
+      {:mint, "~> 1.0"},
+      {:mint_web_socket, "~> 1.0"},
       {:bandit, "~> 1.5"}
     ]
   end

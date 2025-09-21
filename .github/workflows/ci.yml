@@ -1,0 +1,159 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Mix test (matrix)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        elixir: ["1.17.3", "1.18.4"]
+        otp: ["27.3.4.3", "28.1"]
+        exclude:
+          - elixir: "1.17.3" # 1.17 does NOT support OTP 28
+            otp: "28.1"
+          - elixir: "1.18.4" # keep 1.18 with OTP 28 only
+            otp: "27.3.4.3"
+    env:
+      MIX_ENV: test
+      # App DB URL your Ecto Repo expects:
+      # DATABASE_URL: ecto://postgres:postgres@localhost:5432/app_test
+
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: app_test
+        ports: ["5432:5432"]
+        # Healthcheck so the job waits for DB to be ready
+        options: >-
+          --health-cmd "pg_isready -U postgres -d app_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Point Dotenvy to CI env dir
+        run: echo "DOTENVY_DIR=$GITHUB_WORKSPACE/ci_envs" >> $GITHUB_ENV
+
+      - name: Set up BEAM (Elixir/Erlang)
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+          rebar3-version: "3.25.0"
+          version-type: strict
+
+      # Make Mix use the rebar3 we just installed (not a stale ~/.mix/rebar3)
+      - name: Pin MIX_REBAR3
+        run: echo "MIX_REBAR3=${INSTALL_DIR_FOR_REBAR3}/bin/rebar3" >> $GITHUB_ENV
+
+      - name: Restore mix/hex cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+            ~/.mix
+            ~/.hex
+            ~/.cache/rebar3
+          key: ${{ runner.os }}-beam-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
+
+      - name: Install deps
+        run: mix deps.get --only test
+
+      - name: Compile
+        run: mix compile --warnings-as-errors
+
+      - name: Prepare DB
+        run: |
+          mix ecto.create
+          mix ecto.migrate
+
+      - name: Run tests
+        run: mix test --color --slowest 10
+
+  credo:
+    name: Credo
+    runs-on: ubuntu-latest
+    env:
+      MIX_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.18.x"
+          otp-version: "28"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+            ~/.mix
+            ~/.hex
+          key: ${{ runner.os }}-beam-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
+      - run: mix deps.get
+      - run: mix credo --strict
+
+  dialyzer:
+    name: Dialyzer
+    runs-on: ubuntu-latest
+    env:
+      MIX_ENV: dev
+      # optional: reuse a dedicated PLT dir (commit config if you like)
+      # DIALYZER_PLT_PRIV: priv/plts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.18.x"
+          otp-version: "28"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+            ~/.mix
+            ~/.hex
+            priv/plts
+          key: ${{ runner.os }}-beam-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
+      - run: mix deps.get
+      - run: mix compile
+      # Build PLTs (cached) then run analysis
+      - run: mix dialyzer --plt
+      - run: mix dialyzer --format short
+
+  sobelow:
+    name: Sobelow
+    runs-on: ubuntu-latest
+    env:
+      MIX_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.18.x"
+          otp-version: "28"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+            ~/.mix
+            ~/.hex
+          key: ${{ runner.os }}-beam-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
+      - run: mix deps.get
+      - run: mix sobelow -i Config.HTTPS --exit
