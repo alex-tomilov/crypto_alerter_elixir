@@ -1,4 +1,9 @@
 defmodule CryptoAlerterElixir.Ingest.KafkaPipeline do
+  @moduledoc """
+  This module defines a Broadway pipeline for ingesting data from Kafka.
+
+  It starts a Broadway pipeline with a Kafka producer and a default processor.
+  """
   use Broadway
 
   @app :crypto_alerter_elixir
@@ -27,7 +32,6 @@ defmodule CryptoAlerterElixir.Ingest.KafkaPipeline do
 
   @impl true
   def handle_message(_proc, message, _ctx) do
-    # TODO: your processing
     message
   end
 end
