@@ -36,4 +36,5 @@ npm-debug.log
 /assets/node_modules/
 
 envs/.env
+envs/*.overrides.env
 .expert/
