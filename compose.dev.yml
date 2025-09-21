@@ -15,6 +15,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+    deploy:
+      resources:
+        limits:
+          memory: 1G
 
   kafka:
     image: docker.redpanda.com/redpandadata/redpanda:v25.2.5
@@ -38,6 +42,11 @@ services:
       timeout: 5s
       retries: 30
       start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: 1
     volumes:
       - redpanda_dev:/var/lib/redpanda/data
 
