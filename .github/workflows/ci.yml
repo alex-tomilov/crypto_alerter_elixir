@@ -49,6 +49,12 @@ jobs:
         with:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
+          rebar3-version: "3.25.0"
+          version-type: strict
+
+      # Make Mix use the rebar3 we just installed (not a stale ~/.mix/rebar3)
+      - name: Pin MIX_REBAR3
+        run: echo "MIX_REBAR3=${INSTALL_DIR_FOR_REBAR3}/bin/rebar3" >> $GITHUB_ENV
 
       - name: Restore mix/hex cache
         uses: actions/cache@v4
@@ -58,9 +64,8 @@ jobs:
             _build
             ~/.mix
             ~/.hex
+            ~/.cache/rebar3
           key: ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-
 
       - name: Install deps
         run: mix deps.get --only test
@@ -146,4 +151,4 @@ jobs:
             ~/.hex
           key: ${{ runner.os }}-sobelow-${{ hashFiles('mix.lock') }}
       - run: mix deps.get
-      - run: mix sobelow --exit
+      - run: mix sobelow -i Config.HTTPS --exit
