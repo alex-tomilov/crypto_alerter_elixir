@@ -17,7 +17,12 @@ jobs:
       fail-fast: false
       matrix:
         elixir: ["1.17.3", "1.18.4"]
-        otp: ["27.3.4.3", "28.0"]
+        otp: ["27.3.4.3", "28.1"]
+        exclude:
+          - elixir: "1.17.3" # 1.17 does NOT support OTP 28
+            otp: "28.1"
+          - elixir: "1.18.4" # keep 1.18 with OTP 28 only
+            otp: "27.3.4.3"
     env:
       MIX_ENV: test
       # App DB URL your Ecto Repo expects:

@@ -71,7 +71,7 @@ defmodule CryptoAlerterElixir.MixProject do
       {:cachex, "~> 4.0"},
       {:oban, "~> 2.19"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: :dev, runtime: false},
       {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
       {:mint, "~> 1.0"},
       {:mint_web_socket, "~> 1.0"},
