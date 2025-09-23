@@ -4,7 +4,7 @@ defmodule CryptoAlerterElixir.Symbol do
 
   schema "symbols" do
     field :name, :string
-    field :provider, Ecto.Enum, values: [:binance], default: :binance
+    field :provider, Ecto.Enum, values: [binance: 0], default: :binance
     field :enabled, :boolean, default: false
 
     timestamps(type: :utc_datetime)
@@ -15,6 +15,5 @@ defmodule CryptoAlerterElixir.Symbol do
     symbol
     |> cast(attrs, [:name, :provider, :enabled])
     |> validate_required([:name, :provider, :enabled])
-    |> validate_length(:name, min: 1)
   end
 end
