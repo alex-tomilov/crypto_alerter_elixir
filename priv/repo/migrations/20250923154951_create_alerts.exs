@@ -3,7 +3,7 @@ defmodule CryptoAlerterElixir.Repo.Migrations.CreateAlerts do
 
   def change do
     create table(:alerts) do
-      add :symbol_id, references(:symbols, on_delete: :delete_all), null: false, index: true
+      add :symbol_id, references(:symbols, on_delete: :delete_all), null: false
       add :direction, :integer, default: 0, null: false
       add :threshold, :decimal, precision: 18, scale: 8, null: false
       add :mode, :integer, default: 0, null: false
