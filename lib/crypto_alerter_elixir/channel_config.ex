@@ -11,6 +11,8 @@ defmodule CryptoAlerterElixir.ChannelConfig do
 
     timestamps(type: :utc_datetime)
 
+    has_one :email_config, CryptoAlerterElixir.EmailChannelConfig
+
     many_to_many :alerts, CryptoAlerterElixir.Alert,
       join_through: CryptoAlerterElixir.AlertChannel
   end
