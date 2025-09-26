@@ -3,12 +3,13 @@ defmodule CryptoAlerterElixir.AlertChannel do
   import Ecto.Changeset
 
   schema "alert_channels" do
-    field :alert_id, :integer
-    field :channel_config_id, :integer
     field :enabled, :boolean, default: false
     field :priority, Ecto.Enum, values: [low: 0, medium: 1, high: 2]
 
     timestamps(type: :utc_datetime)
+
+    belongs_to :alert, CryptoAlerterElixir.Alert
+    belongs_to :channel_config, CryptoAlerterElixir.ChannelConfig
   end
 
   @doc false

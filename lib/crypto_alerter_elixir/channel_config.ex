@@ -10,6 +10,9 @@ defmodule CryptoAlerterElixir.ChannelConfig do
     field :rate_limit_per_min, :integer
 
     timestamps(type: :utc_datetime)
+
+    many_to_many :alerts, CryptoAlerterElixir.Alert,
+      join_through: CryptoAlerterElixir.AlertChannel
   end
 
   @doc false
