@@ -33,6 +33,7 @@ defmodule CryptoAlerterElixir.Delivery do
   def changeset(delivery, attrs) do
     delivery
     |> cast(attrs, [
+      :channel_config_id,
       :channel_kind,
       :idempotency_key,
       :attempt_no,
