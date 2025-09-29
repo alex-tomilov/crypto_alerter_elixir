@@ -9,5 +9,7 @@ defmodule CryptoAlerterElixir.Repo.Migrations.CreateSymbols do
 
       timestamps(type: :utc_datetime)
     end
+
+    create index(:symbols, [:name, :provider], unique: true)
   end
 end
