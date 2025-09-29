@@ -1,4 +1,7 @@
 defmodule CryptoAlerterElixir.ChannelConfig do
+  @moduledoc """
+  This module provides a structure for a channel configuration, which can be used to configure different types of channels for sending alerts.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -1,4 +1,7 @@
 defmodule CryptoAlerterElixir.Alert do
+  @moduledoc """
+  This module provides a structure for an alert, which can be used to configure different types of alerts for different symbols.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

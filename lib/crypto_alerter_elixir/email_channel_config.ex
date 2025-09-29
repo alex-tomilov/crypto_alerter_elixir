@@ -1,4 +1,7 @@
 defmodule CryptoAlerterElixir.EmailChannelConfig do
+  @moduledoc """
+  This module provides a structure for an email channel configuration, which can be used to send email alerts.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

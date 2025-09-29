@@ -1,4 +1,7 @@
 defmodule CryptoAlerterElixir.Delivery do
+  @moduledoc """
+  This module provides a structure for a delivery, which can be used to track the status of a message sent through a channel.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
