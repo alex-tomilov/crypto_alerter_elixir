@@ -9,8 +9,8 @@ defmodule CryptoAlerterElixir.Repo.Migrations.CreateDeliveries do
       add :attempt_no, :integer, default: 0, null: false
       add :status, :integer, default: 0, null: false
       add :error, :text
-      add :attempted_at, :utc_datetime_usec
-      add :finished_at, :utc_datetime_usec
+      add :attempted_at, :utc_datetime
+      add :finished_at, :utc_datetime
       add :latency_ms, :integer
       add :provider_message_id, :text
       add :config_snapshot, :map, default: %{}

@@ -18,8 +18,8 @@ defmodule CryptoAlerterElixir.Delivery do
       default: :ok
 
     field :error, :string
-    field :attempted_at, :utc_datetime_usec
-    field :finished_at, :utc_datetime_usec
+    field :attempted_at, :utc_datetime
+    field :finished_at, :utc_datetime
     field :latency_ms, :integer
     field :provider_message_id, :string
     field :config_snapshot, :map, default: %{}
