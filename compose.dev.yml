@@ -6,6 +6,8 @@ services:
         required: true
     volumes:
       - pgdata_dev:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
     healthcheck:
       test:
         [
