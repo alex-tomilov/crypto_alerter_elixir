@@ -19,5 +19,7 @@ defmodule CryptoAlerterElixir.Symbol do
     symbol
     |> cast(attrs, [:name, :provider, :enabled])
     |> validate_required([:name, :provider, :enabled])
+    |> validate_length(:name, min: 3, max: 255)
+    |> unique_constraint([:name, :provider])
   end
 end
