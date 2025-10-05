@@ -25,4 +25,24 @@ defmodule CryptoAlerterElixir.SymbolTest do
     assert {:error, changeset} = Repo.insert(another_symbol)
     assert "has already been taken" in errors_on(changeset).name
   end
+
+  test "provider must be one of the supported providers" do
+    changeset = %Symbol{} |> Symbol.changeset(%{provider: :random})
+    assert "is invalid" in errors_on(changeset).provider
+  end
+
+  test "changeset has no provider errors if the provider is valid" do
+    changeset = %Symbol{} |> Symbol.changeset(%{provider: :binance})
+    assert false == Enum.member?(changeset.errors, :provider)
+  end
+
+  test "enabled must be a boolean" do
+    changeset = %Symbol{} |> Symbol.changeset(%{enabled: 1})
+    assert "is invalid" in errors_on(changeset).enabled
+  end
+
+  test "changeset has no enabled errors if the enabled is valid" do
+    changeset = %Symbol{} |> Symbol.changeset(%{enabled: false})
+    assert false == Enum.member?(changeset.errors, :enabled)
+  end
 end
