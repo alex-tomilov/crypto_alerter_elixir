@@ -33,7 +33,7 @@ defmodule CryptoAlerterElixir.SymbolTest do
 
   test "changeset has no provider errors if the provider is valid" do
     changeset = %Symbol{} |> Symbol.changeset(%{provider: :binance})
-    assert false == Enum.member?(changeset.errors, :provider)
+    refute errors_on(changeset)[:provider]
   end
 
   test "enabled must be a boolean" do
@@ -43,6 +43,6 @@ defmodule CryptoAlerterElixir.SymbolTest do
 
   test "changeset has no enabled errors if the enabled is valid" do
     changeset = %Symbol{} |> Symbol.changeset(%{enabled: false})
-    assert false == Enum.member?(changeset.errors, :enabled)
+    refute errors_on(changeset)[:enabled]
   end
 end

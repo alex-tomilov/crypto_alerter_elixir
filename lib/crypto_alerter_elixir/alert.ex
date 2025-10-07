@@ -25,5 +25,6 @@ defmodule CryptoAlerterElixir.Alert do
     alert
     |> cast(attrs, [:symbol_id, :direction, :threshold, :mode, :cooldown_seconds, :hysteresis_pct])
     |> validate_required([:symbol_id, :direction, :threshold, :mode])
+    |> assoc_constraint(:symbol)
   end
 end
