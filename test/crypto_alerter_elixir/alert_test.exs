@@ -1,6 +1,6 @@
 defmodule CryptoAlerterElixir.AlertTest do
   use CryptoAlerterElixir.DataCase, async: true
-  alias CryptoAlerterElixir.{Alert, Repo}
+  alias CryptoAlerterElixir.{Symbol, Alert, Repo}
 
   test "direction must be one of the supported directions" do
     changeset = %Alert{} |> Alert.changeset(%{direction: :random})
@@ -56,5 +56,24 @@ defmodule CryptoAlerterElixir.AlertTest do
   test "changeset has no hysteresis_pct errors if the hysteresis_pct is valid" do
     changeset = %Alert{} |> Alert.changeset(%{hysteresis_pct: 123})
     refute errors_on(changeset)[:hysteresis_pct]
+  end
+
+  test "changeset is invalid when symbol reference to unexisting symbol" do
+    {:error, changeset} =
+      %Alert{} |> Alert.changeset(%{symbol_id: 0, threshold: 123}) |> Repo.insert()
+
+    assert "does not exist" in errors_on(changeset).symbol
+  end
+
+  test "an alert created if a symbol's reference is valid" do
+    symbol_record =
+      %Symbol{}
+      |> Symbol.changeset(%{name: "ABC", provider: :binance, enabled: true})
+      |> Repo.insert!()
+
+    {:ok, alert} =
+      %Alert{} |> Alert.changeset(%{symbol_id: symbol_record.id, threshold: 123}) |> Repo.insert()
+
+    assert alert.symbol_id == symbol_record.id
   end
 end

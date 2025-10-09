@@ -22,7 +22,7 @@ defmodule CryptoAlerterElixir.SymbolTest do
   test "changeset is invalid if a name per a provide is used already" do
     %Symbol{} |> Symbol.changeset(@valid_attrs) |> Repo.insert!()
     another_symbol = %Symbol{} |> Symbol.changeset(@valid_attrs)
-    assert {:error, changeset} = Repo.insert(another_symbol)
+    {:error, changeset} = Repo.insert(another_symbol)
     assert "has already been taken" in errors_on(changeset).name
   end
 
