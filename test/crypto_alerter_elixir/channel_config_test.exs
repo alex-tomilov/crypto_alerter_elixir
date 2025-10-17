@@ -40,4 +40,7 @@ defmodule CryptoAlerterElixir.ChannelConfigTest do
     changeset = %ChannelConfig{} |> ChannelConfig.changeset(%{rate_limit_per_min: 123})
     refute errors_on(changeset)[:rate_limit_per_min]
   end
+
+  # TODO: add tests for the has_one :email_config relationship
+  # TODO: add tests for the many_to_many relationship
 end

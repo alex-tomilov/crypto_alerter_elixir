@@ -76,4 +76,6 @@ defmodule CryptoAlerterElixir.AlertTest do
 
     assert alert.symbol_id == symbol_record.id
   end
+
+  # TODO: add tests for the many_to_many relationship
 end
