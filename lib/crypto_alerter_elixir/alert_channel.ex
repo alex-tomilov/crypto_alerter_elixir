@@ -20,5 +20,6 @@ defmodule CryptoAlerterElixir.AlertChannel do
     alert_channel
     |> cast(attrs, [:alert_id, :channel_config_id, :enabled, :priority])
     |> validate_required([:alert_id, :channel_config_id, :enabled, :priority])
+    |> unique_constraint([:alert_id, :channel_config_id])
   end
 end
