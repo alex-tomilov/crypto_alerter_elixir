@@ -75,7 +75,6 @@ defmodule CryptoAlerterElixir.MixProject do
       {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
       {:mint, "~> 1.0"},
       {:mint_web_socket, "~> 1.0"},
-      {:ecto_email, "~> 1.0"},
       {:bandit, "~> 1.5"}
     ]
   end
