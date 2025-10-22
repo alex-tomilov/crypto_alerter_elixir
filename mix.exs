@@ -75,6 +75,7 @@ defmodule CryptoAlerterElixir.MixProject do
       {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
       {:mint, "~> 1.0"},
       {:mint_web_socket, "~> 1.0"},
+      {:ecto_email, "~> 1.0"},
       {:bandit, "~> 1.5"}
     ]
   end
@@ -90,6 +91,8 @@ defmodule CryptoAlerterElixir.MixProject do
       setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
+      # "ecto.migrate": ["ecto.migrate", "ecto.dump"],
+      # "ecto.rollback": ["ecto.rollback", "ecto.dump"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind crypto_alerter_elixir", "esbuild crypto_alerter_elixir"],
