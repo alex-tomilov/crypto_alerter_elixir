@@ -18,5 +18,8 @@ defmodule CryptoAlerterElixir.EmailChannelConfig do
     email_channel_config
     |> cast(attrs, [:to, :channel_config_id])
     |> validate_required([:to, :channel_config_id])
+    |> validate_format(:to, ~r/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/,
+      message: "must be a valid email address"
+    )
   end
 end
